@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+    php:
+        build: ./docker/php
+        volumes:
+            - ./symfony:/var/www/symfony 
+        networks:
+            - symfony
+
+    nginx:
+        build: ./docker/nginx
+        ports:
+            - "80:80"
+        volumes:
+            - ./symfony:/var/www/symfony 
+            - ./docker/nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template
+        environment:
+            NGINX_DOCUMENT_ROOT: /var/www/symfony/public
+        networks:
+
+    db:
+        image: mariadb
+        environment:
+            MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+            MYSQL_DATABASE: $DB_NAME
+            MYSQL_USER: $DB_USER
+            MYSQL_PASSWORD: $DB_PASSWORD
+        networks:
+            - symfony
+networks:
+    symfony:
