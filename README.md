@@ -20,7 +20,7 @@ APP_ENV=dev
 APP_SECRET=
 DB_PASSWORD="root"
 DEFAULT_URI=http://localhost
-DATABASE_URL="mysql://user:root@db:3306/symfony?serverVersion=10.11.2-MariaDB&charset=utf8mb4"
+DATABASE_URL="mysql://user:root@127.0.0.1:3306/symfony?serverVersion=12.1.2-MariaDB&charset=utf8mb4"
 MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
 MAILER_DSN=null://null
 
