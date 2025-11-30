@@ -29,5 +29,13 @@ services:
             MARIADB_PASSWORD: $DB_PASSWORD
         networks:
             - symfony
+    
+    adminer:
+        image: adminer
+        ports:
+            - "8000:8080"
+        networks:
+            symfony:
+
 networks:
     symfony:
