@@ -1,0 +1,46 @@
+<div class="h-screen w-64 bg-[#2a2235] text-green-400 flex flex-col p-6">
+    
+    <h2 class="text-2xl font-bold mb-8 border-b border-green-600 pb-2">
+        Inventory
+    </h2>
+
+    <nav class="space-y-4 text-lg">
+        <a
+            href="{{ path('app_home') }}"
+            class="block transition duration-200 transform
+            {% if app.request.attributes.get('_route') == 'app_home' or app.request.attributes.get('_route') starts with 'inventory' %}
+                bg-green-400 text-black px-2 py-1 rounded
+            {% else %}
+                hover:text-green-300 hover:translate-x-1
+            {% endif %}"
+        >
+            Inventory
+        </a>
+
+        <a
+            href="{{ path('app_assigned_items') }}"
+            class="block transition duration-200 transform
+            {% if app.request.attributes.get('_route') starts with 'app_assigned_items' %}
+                bg-green-400 text-black px-2 py-1 rounded
+            {% else %}
+                hover:text-green-300 hover:translate-x-1
+            {% endif %}"
+        >
+            Assigned Items
+        </a>
+
+        <a
+            href="{{ path('app_users') }}"
+            class="block transition duration-200 transform
+            {% if app.request.attributes.get('_route') starts with 'app_users' %}
+                bg-green-400 text-black px-2 py-1 rounded
+            {% else %}
+                hover:text-green-300 hover:translate-x-1
+            {% endif %}"
+        >
+            Users
+        </a>
+
+    </nav>
+</div>
+
