@@ -3,12 +3,27 @@
 {% block title %}Hello UsersController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="overflow-x-auto  w-5/6 mx-auto pl-10">
+    <div class="flex justify-end pt-10">
+        <a href="{{ path('app_users_new') }}"
+        class="px-4 py-2 bg-green-400 text-[#2a2235] font-semibold rounded hover:bg-green-500">
+            Create New User
+        </a>
+    </div>
 </div>
+{% include 'components/table.html.twig' with {
+    title: 'User List',
+    items: users,
+    columns: [
+        { label: 'ID', field: 'id' },
+        { label: 'Name', field: 'name' },
+        { label: 'Surname', field: 'surname' },
+        { label: 'Email', field: 'email' },
+        { label: 'Department', field: 'department' }
+    ],
+    pagination: pagination,
+    row_url: '/users/{id}/assigned-items'
+} %}
+
 {% endblock %}

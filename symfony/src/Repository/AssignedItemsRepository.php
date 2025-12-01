@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\AssignedItems;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,6 +15,20 @@ class AssignedItemsRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, AssignedItems::class);
+    }
+
+    public function findAllOrdered(): QueryBuilder
+    {
+        return $this->createQueryBuilder('u')
+            ->orderBy('u.id', 'ASC');
+    }
+
+    public function findByUserOrderedQB(int $userId, string $orderByField = 'id', string $order = 'ASC'): QueryBuilder
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.userId = :userId')  // use the entity property
+            ->setParameter('userId', $userId)
+            ->orderBy('a.assignedAt', $order);
     }
 
     //    /**
