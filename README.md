@@ -12,6 +12,7 @@ DB_ROOT_PASSWORD="root"
 DB_NAME="symfony"
 DB_USER="user"
 DB_PASSWORD="root"
+DATABASE_URL="mysql://user:root@db/symfony?serverVersion=12.1.2-MariaDB&charset=utf8mb4"
 ```
 You should also add an env file to the symfony directory - this is also just an example. 
 Should work out of the box.
@@ -25,20 +26,17 @@ MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
 MAILER_DSN=null://null
 
 ```
-
 ### Install dependencies
 - cd symfony
 - composer install 
-- cd ..
-
-### Run migrations
-Done in the docker image - make sure your container names match the below
-- docker exec -it symfony-php-1 php bin/console make:migration
-- docker exec -it symfony-php-1 php bin/console doctrine:migrations:migrate
 
 # Running the application
 ### Start the application
-- docker-compose up --build
+- docker-compose up or docker-compose up -d
+
+### Stop Server
+- docker-compose down
+
 ### clear db an cache
 - docker-compose down -v
 

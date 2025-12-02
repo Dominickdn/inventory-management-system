@@ -7,7 +7,10 @@ services:
             - ./symfony:/var/www/symfony 
         networks:
             - symfony
-
+        environment:
+            DATABASE_URL: $DATABASE_URL
+        entrypoint: ["/usr/local/bin/docker-entrypoint.sh"]
+        
     nginx:
         build: ./docker/nginx
         ports:
