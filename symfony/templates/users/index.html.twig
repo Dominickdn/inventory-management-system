@@ -20,7 +20,8 @@
         { label: 'Name', field: 'name' },
         { label: 'Surname', field: 'surname' },
         { label: 'Email', field: 'email' },
-        { label: 'Department', field: 'department' }
+        { label: 'Department', field: 'department' },
+        { label: 'Delete', type: 'delete', delete_route: 'app_user_delete' }
     ],
     pagination: pagination,
     row_url: '/users/{id}/assigned-items'

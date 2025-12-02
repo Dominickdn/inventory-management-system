@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="overflow-x-auto  w-5/6 mx-auto pl-10 pt-5">
+    <div class="bg-white shadow rounded-lg p-6 max-w-sm">
+        <h2 class="text-xl font-semibold mb-2">{{ inventory.name }}</h2>
+        <p class="text-gray-600 mb-1"><strong>Type:</strong> {{ inventory.type }}</p>
+        <p class="text-gray-600 mb-1">
+            <strong>Created At:</strong> {{ inventory.createdAt|date('Y-m-d H:i') }}
+        </p>
+        <p class="text-gray-600 mb-1"><strong>Available:</strong> {{ inventory.available }}</p>
+        <p class="text-gray-600 mb-1"><strong>Description:</strong> {{ inventory.description }}</p>
+    </div>
+</div>
+<div class="overflow-x-auto  w-5/6 mx-auto pl-10">
+    <div class="flex justify-end pt-10">
+        <a href="{{ path('app_assign_to_user', { id: inventory.id }) }}""
+        class="px-4 py-2 bg-green-400 text-[#2a2235] font-semibold rounded hover:bg-green-500">
+            Assign a User
+        </a>
+    </div>
+</div>
+
+    <div class="max-w-6xl mx-auto mt-5">
+
+        <div class="overflow-x-auto w-5/6 mx-auto">
+            {% if title is defined %}
+                <h1 class="text-3xl font-bold mb-6 text-gray-800">{{ title }}</h1>
+            {% endif %}
+
+            <table class="min-w-full text-left text-xs text-gray-700 bg-white shadow-md">
+                <thead class="bg-gray-100 border-b">
+                    <tr>
+                        <th class="px-6 py-3 font-semibold">User Id</th>
+                        <th class="px-6 py-3 font-semibold">User Name</th>
+                        <th class="px-6 py-3 font-semibold">User Surname</th>
+                        <th class="px-6 py-3 font-semibold">Department</th>
+                        <th class="px-6 py-3 font-semibold">Quality</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in assignedItems %}
+                        <tr class="border-b hover:bg-gray-50 transition cursor-pointer"
+                            >
+
+                            <td class="px-4 py-2">{{ item.userId.id }}</td>
+                            <td class="px-4 py-2">{{ item.userId.name }}</td>
+                            <td class="px-4 py-2">{{ item.userId.surname }}</td>
+                            <td class="px-4 py-2">{{ item.userId.department }}</td>
+                            <td class="px-4 py-2">{{ item.qualityDescription }}</td>
+
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td class="px-6 py-4 text-center text-gray-500" colspan="6">
+                                No records found.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    <div class="w-5/6 mx-auto pl-10 p-4">
+            <a href="{{ path('app_home') }}"
+            class="px-4 py-1 bg-green-400 text-[#2a2235] font-semibold rounded hover:bg-green-500">
+                <-
+            </a>
+    </div>
+
+{% endblock %}

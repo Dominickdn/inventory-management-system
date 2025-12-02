@@ -59,6 +59,17 @@ class AssignedItems
         return $this;
     }
 
+    public function getUser(): ?User
+    {
+        return $this->userId;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->userId = $user;
+        return $this;
+    }
+
     public function getInventoryId(): ?Inventory
     {
         return $this->inventoryId;

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\InventoryRepository;
-use BcMath\Number;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -29,14 +28,14 @@ class Inventory
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $available = null;
+    #[ORM\Column(type: Types::INTEGER, options: ["default" => 0])]
+    private int $available = 0;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $stockLimit = null;
 
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $total = null;
+    #[ORM\Column(type: Types::INTEGER, options: ["default" => 0])]
+    private int $total = 0;
 
     /**
      * @var Collection<int, AssignedItems>
@@ -46,9 +45,65 @@ class Inventory
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
         $this->assignedItems = new ArrayCollection();
     }
 
+    public function increase(string $field, int $assignedCount = 0): bool
+    {
+        switch ($field) {
+
+            case 'total':
+                if ($this->stockLimit !== null && $this->total >= $this->stockLimit) {
+                    return false;
+                }
+                $this->total++;
+                $this->available = $this->total - $assignedCount;
+                return true;
+
+            case 'stockLimit':
+                $this->stockLimit = ($this->stockLimit ?? 0) + 1;
+                return true;
+
+            case 'available':
+                if ($this->available < $this->total - $assignedCount) {
+                    $this->available++;
+                    return true;
+                }
+                return false;
+        }
+        return false;
+    }
+
+    public function decrease(string $field, int $assignedCount = 0): bool
+    {
+        switch ($field) {
+
+            case 'total':
+                if ($this->total <= $assignedCount) {
+                    return false;
+                }
+                $this->total--;
+                $this->available = $this->total - $assignedCount;
+                return true;
+
+            case 'stockLimit':
+                if (($this->stockLimit ?? 0) > 0) {
+                    $this->stockLimit--;
+                    return true;
+                }
+                return false;
+
+            case 'available':
+                if ($this->available > 0) {
+                    $this->available--;
+                    return true;
+                }
+                return false;
+        }
+        return false;
+    }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -102,6 +157,11 @@ class Inventory
         return $this;
     }
 
+    public function getTotal(): ?int
+    {
+        return $this->total;
+    }
+
     public function getAvailable(): ?int
     {
         return $this->available;
@@ -116,54 +176,5 @@ class Inventory
     public function getStockLimit(): ?int
     {
         return $this->stockLimit;
-    }
-
-    public function setStockLimit(?int $stockLimit): static
-    {
-        $this->stockLimit = $stockLimit;
-
-        return $this;
-    }
-
-    public function getTotal(): ?int
-    {
-        return $this->total;
-    }
-
-    public function setTotal(?int $total): static
-    {
-        $this->total = $total;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, AssignedItems>
-     */
-    public function getAssignedItems(): Collection
-    {
-        return $this->assignedItems;
-    }
-
-    public function addAssignedItem(AssignedItems $assignedItem): static
-    {
-        if (!$this->assignedItems->contains($assignedItem)) {
-            $this->assignedItems->add($assignedItem);
-            $assignedItem->setInventoryId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAssignedItem(AssignedItems $assignedItem): static
-    {
-        if ($this->assignedItems->removeElement($assignedItem)) {
-            // set the owning side to null (unless already changed)
-            if ($assignedItem->getInventoryId() === $this) {
-                $assignedItem->setInventoryId(null);
-            }
-        }
-
-        return $this;
     }
 }

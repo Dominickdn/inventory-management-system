@@ -8,11 +8,10 @@
     {% block stylesheets %}
     {% endblock %}
 </head>
-<body class="flex bg-zinc-300">
-
+<body class="flex bg-zinc-300 max-h-screen">
     {% include 'components/sidebar.html.twig' %}
 
-    <main class="flex-1 p-6">
+    <main class="flex-1 p-2 overflow-x-auto ">
         {% block body %}{% endblock %}
     </main>
 

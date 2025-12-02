@@ -2,14 +2,107 @@
 
 {% block title %}Hello AssignedItemsController!{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+{% block body %}
+<div class="overflow-x-auto  w-5/6 mx-auto pl-10 pt-5">
+
+    <!-- Tabs -->
+    <div class="flex border-b mb-4">
+        <button id="tab-available-btn" class="px-4 py-2 font-semibold border-b-2 border-blue-600 focus:outline-none">
+            Available
+        </button>
+        <button id="tab-assigned-btn" class="px-4 py-2 font-semibold border-b-2 border-transparent focus:outline-none">
+            Assigned
+        </button>
+    </div>
+
+    <!-- Tab Contents -->
+    <div id="tab-available">
+        <h2 class="text-xl font-bold mb-4">Available Inventory</h2>
+        <table class="min-w-full text-left text-xs text-gray-700 bg-white shadow-md">
+            <thead class="bg-gray-100 border-b">
+                <tr>
+                    <th class="px-6 py-3 font-semibold">ID</th>
+                    <th class="px-6 py-3 font-semibold">Name</th>
+                    <th class="px-6 py-3 font-semibold">Type</th>
+                    <th class="px-6 py-3 font-semibold">Available</th>
+                    <th class="px-6 py-3 font-semibold">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in availableInventory %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-2">{{ item.id }}</td>
+                        <td class="px-4 py-2">{{ item.name }}</td>
+                        <td class="px-4 py-2">{{ item.type }}</td>
+                        <td class="px-4 py-2">{{ item.available }}</td>
+                        <td class="px-4 py-2">{{ item.total }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="px-6 py-4 text-center text-gray-500" colspan="5">
+                            No available inventory.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="tab-assigned" class="hidden">
+        <h2 class="text-xl font-bold mb-4">Assigned Items</h2>
+        <table class="min-w-full text-left text-xs text-gray-700 bg-white shadow-md">
+            <thead class="bg-gray-100 border-b">
+                <tr>
+                    <th class="px-6 py-3 font-semibold">ID</th>
+                    <th class="px-6 py-3 font-semibold">Serial Number</th>
+                    <th class="px-6 py-3 font-semibold">User Name</th>
+                    <th class="px-6 py-3 font-semibold">Inventory Name</th>
+                    <th class="px-6 py-3 font-semibold">Assigned At</th>
+                    <th class="px-6 py-3 font-semibold">Quality Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in assignedItems %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-2">{{ item.id }}</td>
+                        <td class="px-4 py-2">{{ item.serialNumber }}</td>
+                        <td class="px-4 py-2">{{ item.userId.name }}</td>
+                        <td class="px-4 py-2">{{ item.inventoryId.name }}</td>
+                        <td class="px-4 py-2">{{ item.assignedAt|date('Y-m-d H:i') }}</td>
+                        <td class="px-4 py-2">{{ item.qualityDescription }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="px-6 py-4 text-center text-gray-500" colspan="6">
+                            No assigned items.
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                <script>
+                    const tabAvailableBtn = document.getElementById('tab-available-btn');
+                    const tabAssignedBtn = document.getElementById('tab-assigned-btn');
+                    const tabAvailable = document.getElementById('tab-available');
+                    const tabAssigned = document.getElementById('tab-assigned');
+
+                    tabAvailableBtn.addEventListener('click', () => {
+                        tabAvailable.classList.remove('hidden');
+                        tabAssigned.classList.add('hidden');
+                        tabAvailableBtn.classList.add('border-blue-600');
+                        tabAssignedBtn.classList.remove('border-blue-600');
+                    });
+
+                    tabAssignedBtn.addEventListener('click', () => {
+                        tabAssigned.classList.remove('hidden');
+                        tabAvailable.classList.add('hidden');
+                        tabAssignedBtn.classList.add('border-blue-600');
+                        tabAvailableBtn.classList.remove('border-blue-600');
+                    });
+                </script>
+            </tbody>
+        </table>
+    </div>
 
 </div>
 {% endblock %}

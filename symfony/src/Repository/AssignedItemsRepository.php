@@ -23,12 +23,22 @@ class AssignedItemsRepository extends ServiceEntityRepository
             ->orderBy('u.id', 'ASC');
     }
 
-    public function findByUserOrderedQB(int $userId, string $orderByField = 'id', string $order = 'ASC'): QueryBuilder
+    public function findByUserOrderedQB(int $userId, string $orderByField = 'assignedAt', string $order = 'ASC'): QueryBuilder
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.userId = :userId')  // use the entity property
+            ->leftJoin('a.userId', 'u')->addSelect('u')         // eager-load User
+            ->leftJoin('a.inventoryId', 'inv')->addSelect('inv') // eager-load Inventory
+            ->andWhere('a.userId = :userId')
             ->setParameter('userId', $userId)
-            ->orderBy('a.assignedAt', $order);
+            ->orderBy('a.' . $orderByField, $order);
+    }
+
+    public function findByInventoryQB(int $inventoryId): QueryBuilder
+    {
+        return $this->createQueryBuilder('ai')
+            ->andWhere('ai.inventoryId = :inv')
+            ->setParameter('inv', $inventoryId)
+            ->orderBy('ai.assignedAt', 'DESC');
     }
 
     //    /**

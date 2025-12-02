@@ -1,12 +1,11 @@
 <div class="max-w-6xl mx-auto mt-5">
 
-
-
-    <div class="overflow-x-auto  w-5/6 mx-auto">
+    <div class="overflow-x-auto w-5/6 mx-auto">
         {% if title is defined %}
-            <h1 class="text-3xl font-bold mb-6 text-gray-800" >{{ title }}</h1>
+            <h1 class="text-3xl font-bold mb-6 text-gray-800">{{ title }}</h1>
         {% endif %}
-        <table class="min-w-full text-left text-xs text-gray-700 bg-white shadow-md ">
+
+        <table class="min-w-full text-left text-xs text-gray-700 bg-white shadow-md">
             <thead class="bg-gray-100 border-b">
                 <tr>
                     {% for col in columns %}
@@ -15,17 +14,80 @@
                 </tr>
             </thead>
 
-           <tbody>
+            <tbody>
             {% for item in items %}
-                <tr class="border-b hover:bg-gray-50 transition cursor-pointer"
+                <tr class="border-b hover:bg-gray-50 transition 
+                           {% if row_url is defined %}cursor-pointer{% endif %}"
                     {% if row_url is defined %}
                         onclick="window.location='{{ row_url|replace({'{id}': item.id}) }}'"
                     {% endif %}>
+
                     {% for col in columns %}
                         <td class="px-4 py-2">
-                            {{ attribute(item, col.field) }}
+
+                            {# NORMAL TEXT FIELD #}
+                            {% if col.type is not defined or col.type == 'text' %}
+                                {{ attribute(item, col.field) }}
+                            {% endif %}
+
+ 
+
+                            {# STOCK ADJUSTMENT FIELD #}
+                            {% if col.type is defined and col.type == 'stock' %}
+                                <div class="flex items-center gap-2">
+
+                                    {# Decrease button #}
+                                    <form method="post" 
+                                        action="{{ path('app_stock_adjust', { id: item.id, field: col.field, action: 'decrease' }) }}"
+                                        onClick="event.stopPropagation();">
+                                        <button
+                                            class="px-2 py-1 bg-gray-200 text-gray-700 rounded 
+                                                hover:bg-gray-300 disabled:opacity-40"
+                                            {% if attribute(item, col.field) <= 0 %}disabled{% endif %}
+                                        >−</button>
+                                    </form>
+
+                                    <span>{{ attribute(item, col.field) }}</span>
+
+                                    {# Increase button #}
+                                    <form method="post" 
+                                        action="{{ path('app_stock_adjust', { id: item.id, field: col.field, action: 'increase' }) }}"
+                                        onClick="event.stopPropagation();">
+                                        <button
+                                            class="px-2 py-1 bg-green-400 text-gray-700 rounded 
+                                                hover:bg-green-300 disabled:opacity-0"
+                                            
+                                            {% if col.field == 'total'
+                                                and item.stockLimit is not null
+                                                and attribute(item, col.field) >= item.stockLimit %}
+                                                disabled
+                                            {% endif %}
+                                        >+</button>
+                                    </form>
+
+                                    {% if col.field == 'total' or col.field == 'stockLimit' %}
+                                        <span class="text-xs text-gray-500">
+                                            {% if item.stockLimit is null %}No limit{% else %}/ {{ item.stockLimit }}{% endif %}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            {# DELETE BUTTON FIELD #}
+                            {% if col.type is defined and col.type == 'delete' %}
+                                <form method="post"
+                                      action="{{ path(col.delete_route, { id: item.id }) }}"
+                                      onsubmit="return confirm('Are you sure you want to delete this?');"
+                                      onClick="event.stopPropagation();">  
+                                    <button class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-400">
+                                        Delete
+                                    </button>
+                                </form>
+                            {% endif %}
+
                         </td>
                     {% endfor %}
+
                 </tr>
             {% else %}
                 <tr>
@@ -39,46 +101,46 @@
     </div>
 
     {% if pagination is defined %}
-    <div class="flex items-center justify-center gap-4 mt-6">
+        <div class="flex items-center justify-center gap-4 mt-6">
 
-        {% if pagination.page > 1 %}
-            <a href="?page={{ pagination.page - 1 }}"
-               class="px-2 py-2 bg-gray-200 rounded hover:bg-gray-300">
-                Prev
-            </a>
-        {% else %}
-            <span class="px-2 py-2 bg-gray-100 text-gray-400 rounded cursor-not-allowed">
-                Prev
-            </span>
-        {% endif %}
+            {% if pagination.page > 1 %}
+                <a href="?page={{ pagination.page - 1 }}"
+                   class="px-2 py-2 bg-gray-200 rounded hover:bg-gray-300">
+                    Prev
+                </a>
+            {% else %}
+                <span class="px-2 py-2 bg-gray-100 text-gray-400 rounded cursor-not-allowed">
+                    Prev
+                </span>
+            {% endif %}
 
-        {% if pagination.page < pagination.pages %}
-            <a href="?page={{ pagination.page + 1 }}"
-               class="px-2 py-2 bg-gray-200 rounded hover:bg-gray-300">
-                Next
-            </a>
-        {% else %}
-            <span class="px-4 py-2 bg-gray-100 text-gray-400 rounded cursor-not-allowed">
-                Next
-            </span>
-        {% endif %}
-        {# Page input #}
-        <form method="get" class="flex items-center gap-2">
-            <input 
-                type="number"
-                name="page"
-                min="1"
-                max="{{ pagination.pages }}"
-                value="{{ pagination.page }}"
-                class="w-20 px-3 py-1 border rounded"
-            >
-            <button type="submit"
-                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                Go
-            </button>
-        </form>
+            {% if pagination.page < pagination.pages %}
+                <a href="?page={{ pagination.page + 1 }}"
+                   class="px-2 py-2 bg-gray-200 rounded hover:bg-gray-300">
+                    Next
+                </a>
+            {% else %}
+                <span class="px-4 py-2 bg-gray-100 text-gray-400 rounded cursor-not-allowed">
+                    Next
+                </span>
+            {% endif %}
 
-    </div>
-{% endif %}
+            <form method="get" class="flex items-center gap-2">
+                <input 
+                    type="number"
+                    name="page"
+                    min="1"
+                    max="{{ pagination.pages }}"
+                    value="{{ pagination.page }}"
+                    class="w-20 px-3 py-1 border rounded"
+                >
+                <button type="submit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Go
+                </button>
+            </form>
+
+        </div>
+    {% endif %}
 
 </div>
