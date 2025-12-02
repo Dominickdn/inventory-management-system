@@ -40,3 +40,8 @@ MAILER_DSN=null://null
 ### clear db an cache
 - docker-compose down -v
 
+### Access DB and site
+Website: http://localhost:80
+Adminer: http://localhost:8000/adminer
+
+
