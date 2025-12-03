@@ -26,10 +26,6 @@ MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
 MAILER_DSN=null://null
 
 ```
-### Install dependencies
-- cd symfony
-- composer install 
-
 # Running the application
 ### Start the application
 - docker-compose up or docker-compose up -d
